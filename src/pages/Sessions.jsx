@@ -11,6 +11,7 @@ const EMPTY = {
   type: 'door-to-door',
   date: format(new Date(), 'yyyy-MM-dd'),
   hours: '',
+  creditHours: '',
   placements: '',
   returnVisits: '',
   bibleStudies: '',
@@ -49,15 +50,20 @@ function SessionModal({ session, onClose, onSave }) {
           </div>
 
           <div className="form-row">
-            <div className="form-group">
-              <label>Date</label>
-              <input type="date" value={form.date} onChange={e => set('date', e.target.value)} required />
-            </div>
-            <div className="form-group">
-              <label>Hours</label>
-              <input type="number" step="0.25" min="0" placeholder="e.g. 2.5" value={form.hours} onChange={e => set('hours', e.target.value)} required />
-            </div>
-          </div>
+  <div className="form-group">
+    <label>Date</label>
+    <input type="date" value={form.date} onChange={e => set('date', e.target.value)} required />
+  </div>
+  <div className="form-group">
+    <label>Hours</label>
+    <input type="number" step="0.25" min="0" placeholder="e.g. 2.5" value={form.hours} onChange={e => set('hours', e.target.value)} required />
+  </div>
+</div>
+
+<div className="form-group">
+  <label>Credit Hours</label>
+  <input type="number" step="0.25" min="0" placeholder="Bethel, convention work, etc." value={form.creditHours} onChange={e => set('creditHours', e.target.value)} />
+</div>
 
           <div className="form-row">
             <div className="form-group">
