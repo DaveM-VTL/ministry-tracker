@@ -17,6 +17,7 @@ export const useAuth = () => useContext(AuthContext)
 function NavBar() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const handleSignOut = async () => {
     await signOut(auth)
@@ -24,60 +25,98 @@ function NavBar() {
   }
 
   return (
-    <nav style={{
-      background: 'var(--white)',
-      borderBottom: '1.5px solid var(--border-light)',
-      padding: '0 24px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      height: 58,
-      position: 'sticky',
-      top: 0,
-      zIndex: 50,
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <span style={{ fontSize: 22 }}>🌿</span>
-        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 18, color: 'var(--green-dark)' }}>
-          Ministry Tracker
-        </span>
-      </div>
+    <>
+      <nav style={{
+        background: 'var(--white)',
+        borderBottom: '1.5px solid var(--border-light)',
+        padding: '0 16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: 58,
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ fontSize: 22 }}>🌿</span>
+          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 18, color: 'var(--green-dark)' }}>
+            Ministry Tracker
+          </span>
+        </div>
 
-      <div style={{ display: 'flex', gap: 4 }}>
-        {[
-          { to: '/', label: '🏠 Dashboard', end: true },
-          { to: '/sessions', label: '⏱ Sessions' },
-          { to: '/contacts', label: '👥 Contacts' },
-          { to: '/reports', label: '📊 Reports' },
-        ].map(({ to, label, end }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
-            style={({ isActive }) => ({
-              padding: '6px 14px',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: 14,
-              fontWeight: 600,
-              color: isActive ? 'var(--green-dark)' : 'var(--text-secondary)',
-              background: isActive ? 'var(--green-light)' : 'transparent',
-              textDecoration: 'none',
-              transition: 'all 0.15s',
-            })}
-          >
-            {label}
-          </NavLink>
-        ))}
-      </div>
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{
+            background: 'none',
+            border: 'none',
+            fontSize: 24,
+            cursor: 'pointer',
+            color: 'var(--text-secondary)',
+            padding: '4px 8px',
+          }}
+        >
+          {menuOpen ? '✕' : '☰'}
+        </button>
+      </nav>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        {user?.photoURL && (
-          <img src={user.photoURL} alt="avatar" style={{ width: 30, height: 30, borderRadius: '50%' }} />
-        )}
-        <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>{user?.displayName || user?.email}</span>
-        <button className="btn btn-secondary btn-sm" onClick={handleSignOut}>Sign out</button>
-      </div>
-    </nav>
+      {menuOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 58,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'var(--white)',
+          zIndex: 49,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '16px',
+          gap: 8,
+        }}>
+          {[
+            { to: '/', label: '🏠 Dashboard', end: true },
+            { to: '/sessions', label: '⏱ Sessions' },
+            { to: '/contacts', label: '👥 Contacts' },
+            { to: '/reports', label: '📊 Reports' },
+          ].map(({ to, label, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              onClick={() => setMenuOpen(false)}
+              style={({ isActive }) => ({
+                padding: '14px 18px',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: 16,
+                fontWeight: 600,
+                color: isActive ? 'var(--green-dark)' : 'var(--text-secondary)',
+                background: isActive ? 'var(--green-light)' : 'var(--cream)',
+                textDecoration: 'none',
+                display: 'block',
+              })}
+            >
+              {label}
+            </NavLink>
+          ))}
+
+          <div style={{ marginTop: 'auto', borderTop: '1px solid var(--border-light)', paddingTop: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+              {user?.photoURL && (
+                <img src={user.photoURL} alt="avatar" style={{ width: 36, height: 36, borderRadius: '50%' }} />
+              )}
+              <div>
+                <div style={{ fontWeight: 600, fontSize: 14 }}>{user?.displayName}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{user?.email}</div>
+              </div>
+            </div>
+            <button className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }} onClick={handleSignOut}>
+              Sign out
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
@@ -152,7 +191,7 @@ function AppShell() {
   return (
     <>
       <NavBar />
-      <main style={{ flex: 1, padding: '28px 24px', maxWidth: 960, margin: '0 auto', width: '100%' }}>
+      <main style={{ flex: 1, padding: '28px 16px', maxWidth: 960, margin: '0 auto', width: '100%' }}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/sessions" element={<Sessions />} />
