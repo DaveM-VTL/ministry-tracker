@@ -38,7 +38,7 @@ export async function addSession(userId, data) {
   return addDoc(collection(db, 'users', userId, 'sessions'), {
     ...data,
     createdAt: Timestamp.now(),
-    date: Timestamp.fromDate(new Date(data.date)),
+    date: Timestamp.fromDate(new Date(data.date + 'T12:00:00')),
   })
 }
 
