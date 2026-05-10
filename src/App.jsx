@@ -1,7 +1,7 @@
 // src/App.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, NavLink, useNavigate } from 'react-router-dom'
-import { onAuthStateChanged, signInAnonymously, signOut } from 'firebase/auth'
+import { onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { auth } from './firebase/config'
 import './styles/global.css'
 
@@ -70,22 +70,29 @@ function NavBar() {
         ))}
       </div>
 
-      <button className="btn btn-secondary btn-sm" onClick={handleSignOut}>
-        Sign out
-      </button>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        {user?.photoURL && (
+          <img src={user.photoURL} alt="avatar" style={{ width: 30, height: 30, borderRadius: '50%' }} />
+        )}
+        <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>{user?.displayName || user?.email}</span>
+        <button className="btn btn-secondary btn-sm" onClick={handleSignOut}>Sign out</button>
+      </div>
     </nav>
   )
 }
 
 function LoginPage() {
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleAnonymousLogin = async () => {
+  const handleGoogleLogin = async () => {
     setLoading(true)
+    setError('')
     try {
-      await signInAnonymously(auth)
+      const provider = new GoogleAuthProvider()
+      await signInWithPopup(auth, provider)
     } catch (err) {
-      console.error(err)
+      setError('Sign-in failed. Please try again.')
       setLoading(false)
     }
   }
@@ -105,16 +112,26 @@ function LoginPage() {
         <p style={{ color: 'var(--text-muted)', marginBottom: 32, lineHeight: 1.6 }}>
           Your personal companion for tracking field service hours, contacts, and placements.
         </p>
+        {error && <p style={{ color: 'red', marginBottom: 16, fontSize: 14 }}>{error}</p>}
         <button
           className="btn btn-primary"
-          style={{ width: '100%', justifyContent: 'center', padding: '12px 24px', fontSize: 16 }}
-          onClick={handleAnonymousLogin}
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            padding: '12px 24px',
+            fontSize: 16,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+          }}
+          onClick={handleGoogleLogin}
           disabled={loading}
         >
-          {loading ? 'Starting…' : '✨ Get Started'}
+          <img src="https://www.google.com/favicon.ico" alt="" style={{ width: 18, height: 18 }} />
+          {loading ? 'Signing in…' : 'Sign in with Google'}
         </button>
         <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16 }}>
-          Your data is stored securely in Firebase and tied to this device.
+          Your data is stored securely and syncs across all your devices.
         </p>
       </div>
     </div>
