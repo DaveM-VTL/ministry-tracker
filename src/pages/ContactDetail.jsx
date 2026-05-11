@@ -18,6 +18,8 @@ export default function ContactDetail() {
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState(null)
   const [newNote, setNewNote] = useState('')
+  const [newNoteDate, setNewNoteDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [newNoteTime, setNewNoteTime] = useState(format(new Date(), 'HH:mm'))
   const [saving, setSaving] = useState(false)
   const [addingNote, setAddingNote] = useState(false)
 
@@ -81,8 +83,11 @@ export default function ContactDetail() {
   const handleAddNote = async () => {
     if (!newNote.trim()) return
     setAddingNote(true)
-    await addNote(user.uid, id, { text: newNote.trim(), date: format(new Date(), 'yyyy-MM-dd') })
+    const noteDate = new Date(newNoteDate + 'T' + newNoteTime + ':00')
+    await addNote(user.uid, id, { text: newNote.trim(), date: newNoteDate, noteDateTime: noteDate.toISOString() })
     setNewNote('')
+    setNewNoteDate(format(new Date(), 'yyyy-MM-dd'))
+    setNewNoteTime(format(new Date(), 'HH:mm'))
     setAddingNote(false)
     const n = await getNotes(user.uid, id)
     setNotes(n)
@@ -226,22 +231,42 @@ export default function ContactDetail() {
       <div className="card">
         <h2 style={{ fontSize: 18, marginBottom: 16 }}>📝 Notes & Visit Log</h2>
 
-        <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-          <textarea
-            placeholder="Record what was discussed, literature left, their interests, how the conversation went…"
-            value={newNote}
-            onChange={e => setNewNote(e.target.value)}
-            style={{ minHeight: 70, flex: 1 }}
-          />
-          <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-            <button
-              className="btn btn-primary"
-              onClick={handleAddNote}
-              disabled={addingNote || !newNote.trim()}
-              style={{ whiteSpace: 'nowrap' }}
-            >
-              {addingNote ? '…' : '+ Add Note'}
-            </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <div className="form-group" style={{ margin: 0, flex: 1 }}>
+              <label>Visit Date</label>
+              <input
+                type="date"
+                value={newNoteDate}
+                onChange={e => setNewNoteDate(e.target.value)}
+              />
+            </div>
+            <div className="form-group" style={{ margin: 0, flex: 1 }}>
+              <label>Time</label>
+              <input
+                type="time"
+                value={newNoteTime}
+                onChange={e => setNewNoteTime(e.target.value)}
+              />
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <textarea
+              placeholder="Record what was discussed, literature left, their interests, how the conversation went…"
+              value={newNote}
+              onChange={e => setNewNote(e.target.value)}
+              style={{ minHeight: 70, flex: 1 }}
+            />
+            <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+              <button
+                className="btn btn-primary"
+                onClick={handleAddNote}
+                disabled={addingNote || !newNote.trim()}
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                {addingNote ? '…' : '+ Add Note'}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -262,7 +287,7 @@ export default function ContactDetail() {
               }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>
-                    {n.createdAt ? format(n.createdAt, 'MMMM d, yyyy · h:mm a') : 'Recent'}
+                    {n.noteDateTime ? format(new Date(n.noteDateTime), 'MMMM d, yyyy · h:mm a') : n.createdAt ? format(n.createdAt, 'MMMM d, yyyy · h:mm a') : 'Recent'}
                   </div>
                   <div style={{ fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
                     {n.text}
