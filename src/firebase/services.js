@@ -87,13 +87,19 @@ export async function getContacts(userId) {
 
 export async function updateContact(userId, contactId, data) {
   const ref = doc(db, 'users', userId, 'contacts', contactId)
-  const updates = { ...data }
-  if (data.lastContact) updates.lastContact = Timestamp.fromDate(new Date(data.lastContact))
-  if (data.nextFollowUp) updates.nextFollowUp = Timestamp.fromDate(new Date(data.nextFollowUp))
-  // Remove any undefined or non-serializable fields
-  delete updates.createdAt
-  delete updates.id
-  Object.keys(updates).forEach(key => updates[key] === undefined && delete updates[key])
+  const updates = {
+    name: data.name || '',
+    ministryType: data.ministryType || 'door-to-door',
+    address: data.address || '',
+    phone: data.phone || '',
+    email: data.email || '',
+    placements: data.placements || '',
+    bibleStudy: data.bibleStudy || false,
+    notes: data.notes || '',
+    creditHours: data.creditHours || '',
+    lastContact: data.lastContact ? Timestamp.fromDate(new Date(data.lastContact + 'T12:00:00')) : null,
+    nextFollowUp: data.nextFollowUp ? Timestamp.fromDate(new Date(data.nextFollowUp + 'T12:00:00')) : null,
+  }
   return updateDoc(ref, updates)
 }
 export async function deleteContact(userId, contactId) {
