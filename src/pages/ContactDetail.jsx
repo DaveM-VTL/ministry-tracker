@@ -37,6 +37,7 @@ export default function ContactDetail() {
       notes: found.notes || '',
       lastContact: found.lastContact ? format(found.lastContact, 'yyyy-MM-dd') : '',
       nextFollowUp: found.nextFollowUp ? format(found.nextFollowUp, 'yyyy-MM-dd') : '',
+      creditHours: found.creditHours || '',
     })
     const n = await getNotes(user.uid, id)
     setNotes(n)
