@@ -47,7 +47,10 @@ export default function ContactDetail() {
  const handleSaveContact = async () => {
     setSaving(true)
     try {
-      await updateContact(user.uid, id, form)
+      const cleanForm = Object.fromEntries(
+        Object.entries(form).filter(([_, v]) => v !== undefined)
+      )
+      await updateContact(user.uid, id, cleanForm)
       setEditing(false)
       await load()
     } catch (err) {
