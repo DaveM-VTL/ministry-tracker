@@ -124,8 +124,9 @@ export function summariseByMonth(sessions) {
   sessions.forEach(s => {
     if (!s.date) return
     const key = `${s.date.getFullYear()}-${String(s.date.getMonth() + 1).padStart(2, '0')}`
-    if (!map[key]) map[key] = { hours: 0, placements: 0, returnVisits: 0, bibleStudies: 0, sessions: 0 }
+    if (!map[key]) map[key] = { hours: 0, creditHours: 0, placements: 0, returnVisits: 0, bibleStudies: 0, sessions: 0 }
     map[key].hours += Number(s.hours || 0)
+    map[key].creditHours += Number(s.creditHours || 0)
     map[key].placements += Number(s.placements || 0)
     map[key].returnVisits += Number(s.returnVisits || 0)
     map[key].bibleStudies += Number(s.bibleStudies || 0)

@@ -16,19 +16,19 @@ export default function Reports() {
 
   const monthly = summariseByMonth(sessions)
 
-  // Type totals
   const typeTotals = MINISTRY_TYPES.reduce((acc, t) => {
     const typeSessions = sessions.filter(s => s.type === t)
     acc[t] = {
       hours: typeSessions.reduce((sum, s) => sum + Number(s.hours || 0), 0),
+      creditHours: typeSessions.reduce((sum, s) => sum + Number(s.creditHours || 0), 0),
       count: typeSessions.length,
       placements: typeSessions.reduce((sum, s) => sum + Number(s.placements || 0), 0),
     }
     return acc
   }, {})
 
-  // Overall totals
   const totalHours = sessions.reduce((t, s) => t + Number(s.hours || 0), 0)
+  const totalCreditHours = sessions.reduce((t, s) => t + Number(s.creditHours || 0), 0)
   const totalPlacements = sessions.reduce((t, s) => t + Number(s.placements || 0), 0)
   const totalRVs = sessions.reduce((t, s) => t + Number(s.returnVisits || 0), 0)
   const totalBS = sessions.reduce((t, s) => t + Number(s.bibleStudies || 0), 0)
@@ -50,9 +50,10 @@ export default function Reports() {
         <>
           {/* Totals */}
           <h2 style={{ fontSize: 16, color: 'var(--text-secondary)', marginBottom: 12 }}>All-Time Totals</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, marginBottom: 36 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 14, marginBottom: 36 }}>
             {[
               { label: 'Total Hours', value: totalHours.toFixed(1), icon: '⏱' },
+              { label: 'Credit Hours', value: totalCreditHours.toFixed(1), icon: '⭐' },
               { label: 'Sessions', value: sessions.length, icon: '📋' },
               { label: 'Placements', value: totalPlacements, icon: '📚' },
               { label: 'Return Visits', value: totalRVs, icon: '🔁' },
@@ -75,6 +76,7 @@ export default function Reports() {
                   <th style={{ textAlign: 'left', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>Type</th>
                   <th style={{ textAlign: 'right', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>Sessions</th>
                   <th style={{ textAlign: 'right', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>Hours</th>
+                  <th style={{ textAlign: 'right', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>Credit Hrs</th>
                   <th style={{ textAlign: 'right', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>Placements</th>
                 </tr>
               </thead>
@@ -86,7 +88,8 @@ export default function Reports() {
                     </td>
                     <td style={{ textAlign: 'right', padding: '11px 16px', color: 'var(--text-secondary)' }}>{typeTotals[t].count}</td>
                     <td style={{ textAlign: 'right', padding: '11px 16px', color: 'var(--green-dark)', fontWeight: 700 }}>{typeTotals[t].hours.toFixed(1)}</td>
-                    <td style={{ textAlign: 'right', padding: '11px 16px', color: 'var(--amber)', fontWeight: 700 }}>{typeTotals[t].placements}</td>
+                    <td style={{ textAlign: 'right', padding: '11px 16px', color: 'var(--amber)', fontWeight: 700 }}>{typeTotals[t].creditHours.toFixed(1)}</td>
+                    <td style={{ textAlign: 'right', padding: '11px 16px' }}>{typeTotals[t].placements}</td>
                   </tr>
                 ))}
               </tbody>
@@ -131,6 +134,7 @@ export default function Reports() {
                   <th style={{ textAlign: 'left', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>Month</th>
                   <th style={{ textAlign: 'right', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>Sessions</th>
                   <th style={{ textAlign: 'right', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>Hours</th>
+                  <th style={{ textAlign: 'right', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>Credit Hrs</th>
                   <th style={{ textAlign: 'right', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>Placements</th>
                   <th style={{ textAlign: 'right', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>RVs</th>
                   <th style={{ textAlign: 'right', padding: '10px 16px', fontWeight: 700, color: 'var(--text-secondary)' }}>BS</th>
@@ -144,6 +148,7 @@ export default function Reports() {
                     </td>
                     <td style={{ textAlign: 'right', padding: '11px 16px', color: 'var(--text-secondary)' }}>{m.sessions}</td>
                     <td style={{ textAlign: 'right', padding: '11px 16px', color: 'var(--green-dark)', fontWeight: 700 }}>{m.hours.toFixed(1)}</td>
+                    <td style={{ textAlign: 'right', padding: '11px 16px', color: 'var(--amber)', fontWeight: 700 }}>{(m.creditHours || 0).toFixed(1)}</td>
                     <td style={{ textAlign: 'right', padding: '11px 16px' }}>{m.placements}</td>
                     <td style={{ textAlign: 'right', padding: '11px 16px' }}>{m.returnVisits}</td>
                     <td style={{ textAlign: 'right', padding: '11px 16px' }}>{m.bibleStudies}</td>
