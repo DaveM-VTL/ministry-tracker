@@ -44,12 +44,18 @@ export default function ContactDetail() {
 
   useEffect(() => { if (user) load() }, [user, id])
 
-  const handleSaveContact = async () => {
+ const handleSaveContact = async () => {
     setSaving(true)
-    await updateContact(user.uid, id, form)
-    setSaving(false)
-    setEditing(false)
-    await load()
+    try {
+      await updateContact(user.uid, id, form)
+      setEditing(false)
+      await load()
+    } catch (err) {
+      console.error('Save error:', err)
+      alert('Error saving: ' + err.message)
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleDelete = async () => {
