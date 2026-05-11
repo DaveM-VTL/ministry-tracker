@@ -27,10 +27,16 @@ export default function ContactDetail() {
     if (!found) { navigate('/contacts'); return }
     setContact(found)
     setForm({
-      ...found,
+      name: found.name || '',
+      ministryType: found.ministryType || 'door-to-door',
+      address: found.address || '',
+      phone: found.phone || '',
+      email: found.email || '',
+      placements: found.placements || '',
+      bibleStudy: found.bibleStudy || false,
+      notes: found.notes || '',
       lastContact: found.lastContact ? format(found.lastContact, 'yyyy-MM-dd') : '',
       nextFollowUp: found.nextFollowUp ? format(found.nextFollowUp, 'yyyy-MM-dd') : '',
-      createdAt: undefined,
     })
     const n = await getNotes(user.uid, id)
     setNotes(n)
@@ -67,7 +73,7 @@ export default function ContactDetail() {
     setNotes(notes.filter(n => n.id !== noteId))
   }
 
-  if (!contact) return <p style={{ color: 'var(--text-muted)' }}>Loading…</p>
+  if (!contact || !form) return <p style={{ color: 'var(--text-muted)' }}>Loading…</p>
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -104,37 +110,37 @@ export default function ContactDetail() {
             <div>
               <div className="form-group">
                 <label>Name</label>
-                <input value={form.name || ''} onChange={e => set('name', e.target.value)} />
+                <input value={form.name} onChange={e => set('name', e.target.value)} />
               </div>
               <div className="form-group">
                 <label>Ministry Type</label>
-                <select value={form.ministryType || ''} onChange={e => set('ministryType', e.target.value)}>
+                <select value={form.ministryType} onChange={e => set('ministryType', e.target.value)}>
                   {MINISTRY_TYPES.map(t => <option key={t} value={t}>{TYPE_ICONS[t]} {TYPE_LABELS[t]}</option>)}
                 </select>
               </div>
               <div className="form-group">
                 <label>Address</label>
-                <input value={form.address || ''} onChange={e => set('address', e.target.value)} />
+                <input value={form.address} onChange={e => set('address', e.target.value)} />
               </div>
               <div className="form-group">
                 <label>Phone</label>
-                <input value={form.phone || ''} onChange={e => set('phone', e.target.value)} />
+                <input value={form.phone} onChange={e => set('phone', e.target.value)} />
               </div>
               <div className="form-group">
                 <label>Email</label>
-                <input value={form.email || ''} onChange={e => set('email', e.target.value)} />
+                <input value={form.email} onChange={e => set('email', e.target.value)} />
               </div>
               <div className="form-group">
                 <label>Last Contact</label>
-                <input type="date" value={form.lastContact || ''} onChange={e => set('lastContact', e.target.value)} />
+                <input type="date" value={form.lastContact} onChange={e => set('lastContact', e.target.value)} />
               </div>
               <div className="form-group">
                 <label>Next Follow-up</label>
-                <input type="date" value={form.nextFollowUp || ''} onChange={e => set('nextFollowUp', e.target.value)} />
+                <input type="date" value={form.nextFollowUp} onChange={e => set('nextFollowUp', e.target.value)} />
               </div>
               <div className="form-group">
                 <label>Placements Given</label>
-                <input type="number" min="0" value={form.placements || ''} onChange={e => set('placements', e.target.value)} />
+                <input type="number" min="0" value={form.placements} onChange={e => set('placements', e.target.value)} />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                 <input type="checkbox" id="bs2" checked={!!form.bibleStudy} onChange={e => set('bibleStudy', e.target.checked)} style={{ width: 'auto' }} />
@@ -151,22 +157,22 @@ export default function ContactDetail() {
                 { label: '🗓 Last contact', val: contact.lastContact ? format(contact.lastContact, 'MMMM d, yyyy') : null },
                 { label: '🔔 Next follow-up', val: contact.nextFollowUp ? format(contact.nextFollowUp, 'MMMM d, yyyy') : null },
               ].filter(r => r.val).map(({ label, val, isAddress }) => (
-  <div key={label} style={{ display: 'flex', gap: 8 }}>
-    <span style={{ color: 'var(--text-muted)', minWidth: 120 }}>{label}</span>
-    {isAddress ? (
-      
-        href={`https://maps.google.com/?q=${encodeURIComponent(val)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ color: 'var(--green-dark)', fontWeight: 500 }}
-      >
-        {val}
-      </a>
-    ) : (
-      <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{val}</span>
-    )}
-  </div>
-))}
+                <div key={label} style={{ display: 'flex', gap: 8 }}>
+                  <span style={{ color: 'var(--text-muted)', minWidth: 120 }}>{label}</span>
+                  {isAddress ? (
+                    
+                      href={`https://maps.google.com/?q=${encodeURIComponent(val)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: 'var(--green-dark)', fontWeight: 500 }}
+                    >
+                      {val}
+                    </a>
+                  ) : (
+                    <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{val}</span>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>
