@@ -90,9 +90,12 @@ export async function updateContact(userId, contactId, data) {
   const updates = { ...data }
   if (data.lastContact) updates.lastContact = Timestamp.fromDate(new Date(data.lastContact))
   if (data.nextFollowUp) updates.nextFollowUp = Timestamp.fromDate(new Date(data.nextFollowUp))
+  // Remove any undefined or non-serializable fields
+  delete updates.createdAt
+  delete updates.id
+  Object.keys(updates).forEach(key => updates[key] === undefined && delete updates[key])
   return updateDoc(ref, updates)
 }
-
 export async function deleteContact(userId, contactId) {
   return deleteDoc(doc(db, 'users', userId, 'contacts', contactId))
 }
