@@ -179,18 +179,7 @@ export default function ContactDetail() {
               ].filter(r => r.val).map(({ label, val, isAddress }) => (
                 <div key={label} style={{ display: 'flex', gap: 8 }}>
                   <span style={{ color: 'var(--text-muted)', minWidth: 120 }}>{label}</span>
-                  {isAddress ? (
-                    
-                      href={"https://maps.google.com/?q=" + encodeURIComponent(val)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ color: 'var(--green-dark)', fontWeight: 500 }}
-                    >
-                      {val}
-                    </a>
-                  ) : (
-                    <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{val}</span>
-                  )}
+                  <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{val}</span>
                 </div>
               ))}
             </div>
