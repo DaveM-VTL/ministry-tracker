@@ -181,7 +181,7 @@ export default function ContactDetail() {
                   <span style={{ color: 'var(--text-muted)', minWidth: 120 }}>{label}</span>
                   {isAddress ? (
                     
-                      href={`https://maps.google.com/?q=${encodeURIComponent(val)}`}
+                      href={"https://maps.google.com/?q=" + encodeURIComponent(val)}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ color: 'var(--green-dark)', fontWeight: 500 }}
