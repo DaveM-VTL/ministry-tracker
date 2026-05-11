@@ -144,18 +144,29 @@ export default function ContactDetail() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 14 }}>
               {[
-                { label: '📍 Address', val: contact.address },
+                { label: '📍 Address', val: contact.address, isAddress: true },
                 { label: '📞 Phone', val: contact.phone },
                 { label: '✉️ Email', val: contact.email },
                 { label: '📚 Placements', val: contact.placements ? `${contact.placements} given` : null },
                 { label: '🗓 Last contact', val: contact.lastContact ? format(contact.lastContact, 'MMMM d, yyyy') : null },
                 { label: '🔔 Next follow-up', val: contact.nextFollowUp ? format(contact.nextFollowUp, 'MMMM d, yyyy') : null },
-              ].filter(r => r.val).map(({ label, val }) => (
-                <div key={label} style={{ display: 'flex', gap: 8 }}>
-                  <span style={{ color: 'var(--text-muted)', minWidth: 120 }}>{label}</span>
-                  <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{val}</span>
-                </div>
-              ))}
+              ].filter(r => r.val).map(({ label, val, isAddress }) => (
+  <div key={label} style={{ display: 'flex', gap: 8 }}>
+    <span style={{ color: 'var(--text-muted)', minWidth: 120 }}>{label}</span>
+    {isAddress ? (
+      
+        href={`https://maps.google.com/?q=${encodeURIComponent(val)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ color: 'var(--green-dark)', fontWeight: 500 }}
+      >
+        {val}
+      </a>
+    ) : (
+      <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{val}</span>
+    )}
+  </div>
+))}
             </div>
           )}
         </div>
