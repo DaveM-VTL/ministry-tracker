@@ -170,7 +170,7 @@ export default function ContactDetail() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 14 }}>
               {[
-               { label: '📍 Address', val: contact.address },
+               { label: '📍 Address', val: contact.address, isAddress: true },
                 { label: '📞 Phone', val: contact.phone },
                 { label: '✉️ Email', val: contact.email },
                 { label: '📚 Placements', val: contact.placements ? `${contact.placements} given` : null },
@@ -179,12 +179,16 @@ export default function ContactDetail() {
               ].filter(r => r.val).map(({ label, val, isAddress }) => (
                 <div key={label} style={{ display: 'flex', gap: 8 }}>
                   <span style={{ color: 'var(--text-muted)', minWidth: 120 }}>{label}</span>
-                  <span
-  style={{ color: 'var(--green-dark)', fontWeight: 500, cursor: 'pointer', textDecoration: 'underline' }}
-  onClick={() => window.open('https://maps.google.com/?q=' + encodeURIComponent(val), '_blank')}
->
-  {val}
-</span>
+                  {isAddress ? (
+  <span
+    style={{ color: 'var(--green-dark)', fontWeight: 500, cursor: 'pointer', textDecoration: 'underline' }}
+    onClick={() => window.open('https://maps.google.com/?q=' + encodeURIComponent(val), '_blank')}
+  >
+    {val}
+  </span>
+) : (
+  <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{val}</span>
+)}
                 </div>
               ))}
             </div>
