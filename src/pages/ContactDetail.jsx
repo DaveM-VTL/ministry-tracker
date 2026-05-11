@@ -48,9 +48,19 @@ export default function ContactDetail() {
  const handleSaveContact = async () => {
     setSaving(true)
     try {
-      const cleanForm = Object.fromEntries(
-        Object.entries(form).filter(([_, v]) => v !== undefined)
-      )
+      const cleanForm = {
+        name: form.name || '',
+        ministryType: form.ministryType || 'door-to-door',
+        address: form.address || '',
+        phone: form.phone || '',
+        email: form.email || '',
+        placements: form.placements || '',
+        bibleStudy: form.bibleStudy || false,
+        notes: form.notes || '',
+        lastContact: form.lastContact || '',
+        nextFollowUp: form.nextFollowUp || '',
+        creditHours: form.creditHours || '',
+      }
       await updateContact(user.uid, id, cleanForm)
       setEditing(false)
       await load()
